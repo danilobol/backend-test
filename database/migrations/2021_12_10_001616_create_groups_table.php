@@ -17,8 +17,10 @@ class CreateGroupsTable extends Migration
             $table->id();
             $table->string('name');
             $table->bigInteger('institutions_id')->unsigned();
+            $table->bigInteger('owner_id')->unsigned();
             $table->decimal('amount',12,2)->unsigned();
             $table->foreign('institutions_id')->references('id')->on('institutions')->onDelete('cascade');
+            $table->foreign('owner_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });
