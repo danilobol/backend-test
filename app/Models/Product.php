@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 
 class Product extends Model
 {
-    use HasFactory, Notifiable, SoftDeletes;
+    use HasFactory, Notifiable;
 
 
     protected $table = 'products';
@@ -31,13 +31,15 @@ class Product extends Model
 
     protected $dates = [
         'created_at',
-        'updated_at',
-        'deleted_at'
+        'updated_at'
     ];
 
     protected $hidden = [
         'created_at',
-        'updated_at',
-        'deleted_at'
+        'updated_at'
     ];
+
+    public function institution(){
+        return $this->hasOne(Institution::class, 'id', 'institution_id');
+    }
 }
