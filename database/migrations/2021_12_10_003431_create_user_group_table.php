@@ -17,13 +17,12 @@ class CreateUserGroupTable extends Migration
             $table->id();
             $table->bigInteger('user_id')->unsigned();
             $table->bigInteger('group_id')->unsigned();
-            $table->bigInteger('role_id')->unsigned();
+            $table->enum('type', ['normal', 'admin'])->default('normal');
             $table->timestamps();
             $table->softDeletes();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('group_id')->references('id')->on('groups')->onDelete('cascade');
-            $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
         });
     }
 
