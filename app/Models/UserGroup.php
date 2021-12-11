@@ -24,7 +24,7 @@ class UserGroup extends Model
     protected $fillable = [
         'user_id',
         'group_id',
-        'role_id'
+        'type'
     ];
 
     protected $dates = [
@@ -38,4 +38,8 @@ class UserGroup extends Model
         'updated_at',
         'deleted_at'
     ];
+
+    public function group(){
+        return $this->hasOne(Group::class, 'id', 'group_id');
+    }
 }
