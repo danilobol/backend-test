@@ -37,7 +37,7 @@ class UserRoleRepository implements IUserRoleRepository {
         return $this->userRole::filtered(self::ALLOWED_FILTERS)->with('user')->with('role')->get();
     }
 
-    public function createUserRole(string $userId, int $roleId, string $created_by) {
+    public function createUserRole(int $userId, int $roleId, int $created_by) {
         return $this->userRole::create([
             'user_id'       => $userId,
             'role_id'       => $roleId,
@@ -47,7 +47,7 @@ class UserRoleRepository implements IUserRoleRepository {
     }
 
 
-    public function removeUserRole(string $id_user, int $id_role) {
+    public function removeUserRole(int $id_user, int $id_role) {
         $userRole = $this->userRole::
         where('user_id', $id_user)
             ->where('role_id', $id_role)

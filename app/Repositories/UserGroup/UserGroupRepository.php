@@ -13,11 +13,11 @@ use App\Repositories\Contracts\IUserGroupRepository;
  */
 class UserGroupRepository implements IUserGroupRepository
 {
-    public function addUserToGroup(int $userId, int $groupId, int $role_id){
+    public function addUserToGroup(int $userId, int $groupId, string $type){
         return UserGroup::create([
             'user_id'       => $userId,
             'group_id'      => $groupId,
-            'role_id'       => $role_id
+            'type'          => $type
         ]);
     }
     public function removeUserToGroup(int $userId, int $groupId):void{
@@ -29,7 +29,7 @@ class UserGroupRepository implements IUserGroupRepository
     public function getGroupsOfUser(int $userId): \Illuminate\Database\Eloquent\Collection|array
     {
         return UserGroup::query()->where('user_id', '=', $userId)
-            ->with('groups')
+            ->with('group')
             ->get();
     }
 

@@ -28,10 +28,14 @@ class ProductRepository implements IProductRepository
     }
 
     public function getProductById(int $productId){
-        return Product::query()->where('id','=', $productId)->first();
+        return Product::query()->where('products.id','=', $productId)
+            ->with('institution')
+            ->get();
     }
 
     public function getAllProducts(){
-        return Product::query()->get();
+        return Product::query()
+            ->with('institution')
+            ->get();
     }
 }

@@ -4,6 +4,6 @@ namespace App\Repositories\Contracts;
 
 interface IUserRoleRepository {
     public function getAllUsersRole();
-    public function createUserRole(string $userId, int $roleId, string $created_by);
-    public function removeUserRole(string $id_user, int $id_role);
+    public function createUserRole(int $userId, int $roleId, int $created_by);
+    public function removeUserRole(int $id_user, int $id_role);
 }

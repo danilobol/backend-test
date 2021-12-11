@@ -3,7 +3,7 @@
 namespace App\Services\Contracts;
 
 interface IUserGroupService {
-    public function addUserToGroup(string $userId, string $groupId);
-    public function removeUserToGroup(string $userId, string $groupId):void;
-    public function getGroupsOfUser(string $userId);
+    public function addUserToGroup(int $userId, int $groupId, string $type);
+    public function removeUserToGroup(int $userId, int $groupId):void;
+    public function getGroupsOfUser(int $userId);
 }
