@@ -19,7 +19,7 @@ class UserRoleService implements IUserRoleService{
         return $this->userRoleRepository->getAllUsersRole();
     }
 
-    public function createUserRole(string $userId, int $roleId, string $created_by) {
+    public function createUserRole(int $userId, int $roleId, int $created_by) {
 
         $validator = Validator::make(['user_id' => $userId, 'role_id' => $roleId], [
             'user_id' => 'required|exists:users,id',
@@ -34,7 +34,7 @@ class UserRoleService implements IUserRoleService{
     }
 
 
-    public function removeUserRole(string $userId, int $roleId) {
+    public function removeUserRole(int $userId, int $roleId) {
 
         $validator = Validator::make(['user_id' => $userId, 'role_id' => $roleId], [
             'user_id' => 'required|exists:users,id',

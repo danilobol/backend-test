@@ -4,27 +4,24 @@ namespace App\Services\User;
 
 
 use App\Repositories\Contracts\IUserRepository;
-use App\Services\Contracts\ImLearnService;
 use App\Services\Contracts\IUserRoleService;
 use App\Services\Contracts\IUserService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserService implements IUserService
 {
     protected $userRepository;
     protected $userRoleService;
-    protected $mLearnService;
 
     public function __construct(
         IUserRepository $userRepository,
         IUserRoleService $userRoleService,
-        ImLearnService $mLearnService
     )
     {
         $this->userRepository = $userRepository;
         $this->userRoleService = $userRoleService;
-        $this->mLearnService = $mLearnService;
     }
 
     public function registerUser(string $email, string $name, string $password){
@@ -71,7 +68,7 @@ class UserService implements IUserService
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60,
+            'expires_in' => auth()->factory()->getTTL() * 60000,
             'user' => auth()->user()
         ]);
     }
