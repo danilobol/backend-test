@@ -1,9 +1,9 @@
-# Backend-challenge 2 Danilo Brito
+# Backend-Test Danilo Brito
 
 ## Getting Started
 
 #### Repository clone and configuration
-    1 - git clone git@github.com:danilobol/Merchant-backend.git
+    1 - git clone --branch development git@github.com:danilobol/backend-test.git
     2 - Rename .env.example to .env
     3 - Start the docker enviroment:
 ```
@@ -42,3 +42,4 @@ Documentation is available at:
 
     - php 8.0
     - laravel 8
+    - Swagger
