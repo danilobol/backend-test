@@ -8,7 +8,13 @@ interface ITransactionService {
         float $amount,
         int $user_id,
         int $group_id,
-        int $product_id
+        ? int $product_id
     );
-    public function getTotalUserBalancePerGroup(int $userId, int $groupId);
+    public function getUserTransactionsByGroupId(
+        int $userId,
+        int $groupId,
+        int $rowPerPage,
+        int $page);
+
+    public function viewOfAnInvestmentWithExpectedBalance(int $userId, int $groupId);
 }
