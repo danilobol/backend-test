@@ -19,11 +19,11 @@ class CreateTransactionsTable extends Migration
             $table->collation = 'utf8mb4_unicode_ci';
 
             $table->uuid('id')->primary();
-            $table->enum('type', ['invest', 'withdraw'])->default('invest');
+            $table->enum('type', ['invest', 'withdraw', 'profit'])->default('invest');
             $table->decimal('amount',12,2)->unsigned();
             $table->bigInteger('user_id')->unsigned();
             $table->bigInteger('group_id')->unsigned();
-            $table->bigInteger('product_id')->unsigned();
+            $table->bigInteger('product_id')->unsigned()->nullable();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('group_id')->references('id')->on('groups')->onDelete('cascade');
