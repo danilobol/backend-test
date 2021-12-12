@@ -47,8 +47,8 @@ class UserRoleController extends Controller
             return response()->json([$this->userRoleService->createUserRole($data->user_id, $data->role_id, $user->id)]);
         }catch (\Exception $e){
             return response()->json([
-                'message' => ServerErrors::getError(ServerErrors::ERROR_1012),
-                'code' => ServerErrors::ERROR_1012,
+                'message' => ServerErrors::getError(ServerErrors::ERROR_1001),
+                'code' => ServerErrors::ERROR_1001,
                 'error' => $e->getMessage()
             ], 403);
         }
@@ -85,8 +85,8 @@ class UserRoleController extends Controller
             return response()->json([$this->userRoleService->removeUserRole($data->user_id, $data->role_id)]);
         }catch (\Exception $e){
             return response()->json([
-                'message' => ServerErrors::getError(ServerErrors::ERROR_1012),
-                'code' => ServerErrors::ERROR_1012,
+                'message' => ServerErrors::getError(ServerErrors::ERROR_1001),
+                'code' => ServerErrors::ERROR_1001,
                 'error' => $e->getMessage()
             ], 403);
         }
@@ -112,7 +112,7 @@ class UserRoleController extends Controller
         }catch (\Exception $e){
             return response()->json([
                 'message' => ServerErrors::getError(ServerErrors::ERROR_1012),
-                'code' => ServerErrors::ERROR_1012,
+                'code' => ServerErrors::ERROR_1001,
                 'error' => $e->getMessage()
             ], 403);
         }
