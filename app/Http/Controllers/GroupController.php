@@ -70,7 +70,7 @@ class GroupController extends Controller
      *         response=200,
      *         description="successful operation",
      *     ),
-     *     @OA\Parameter(in="query", name="groupId", required=false, @OA\Schema(type="string")),
+     *     @OA\Parameter(in="query", name="groupId", required=false, @OA\Schema(type="integer")),
      * )
      *
      * @param  \Illuminate\Http\Request  $request
