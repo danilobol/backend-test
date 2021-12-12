@@ -36,6 +36,8 @@ Route::group([
 
 ], function ($router) {
     Route::post('/new', [TransactionController::class,'store']);
+    Route::get('/show', [TransactionController::class,'show']);
+    Route::get('/expected-balance', [TransactionController::class,'showExpectedBalance']);
 });
 
 Route::group([
