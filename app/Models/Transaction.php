@@ -7,10 +7,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
+use Prettus\Repository\Contracts\Transformable;
+use Prettus\Repository\Traits\TransformableTrait;
 
-class Transaction extends Model
+class Transaction extends Model implements Transformable
 {
-    use HasFactory, Notifiable, SoftDeletes, MakeUuid;
+    use HasFactory, Notifiable, SoftDeletes, MakeUuid, TransformableTrait;
 
 
     protected $table = 'transactions';
@@ -27,7 +30,8 @@ class Transaction extends Model
         'amount',
         'user_id',
         'group_id',
-        'product_id'
+        'product_id',
+        'created_at'
     ];
 
     protected $dates = [
@@ -37,7 +41,6 @@ class Transaction extends Model
     ];
 
     protected $hidden = [
-        'created_at',
         'updated_at',
         'deleted_at'
     ];
