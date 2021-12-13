@@ -38,6 +38,10 @@ Documentation is available at:
     localhost:8100/
 ```
 
+####Tutorial
+
+Leia o tutorial de autenticação:  [`Tutorial.pdf`](/Tutorial.pdf)
+
 #### Detalhes
 
     - php 8.0
