@@ -40,7 +40,7 @@ Documentation is available at:
 
 ####Tutorial
 
-Leia o tutorial de autenticação:  [`Tutorial.pdf`](/Tutorial.pdf)
+Read the authentication tutorial:  [`Tutorial.pdf`](/Tutorial.pdf)
 
 #### Detalhes
 
