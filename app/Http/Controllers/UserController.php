@@ -29,9 +29,9 @@ class UserController extends Controller
      *         required=true,
      *         @OA\JsonContent(
      *         type="object",
-     *          @OA\Property(property="email", type="string"),
-     *          @OA\Property(property="name", type="string"),
-     *          @OA\Property(property="password", type="string"),
+     *          @OA\Property(property="email", type="string", example="danilo@coderockr.com"),
+     *          @OA\Property(property="name", type="string", example="Danilo"),
+     *          @OA\Property(property="password", type="string", example="123456"),
      *          )
      *     )
      * )
@@ -73,8 +73,8 @@ class UserController extends Controller
      *         required=true,
      *         @OA\JsonContent(
      *         type="object",
-     *          @OA\Property(property="email", type="string"),
-     *          @OA\Property(property="password", type="string"),
+     *          @OA\Property(property="email", type="string", example="danilo@coderockr.com"),
+     *          @OA\Property(property="password", type="string", example="123456"),
      *          )
      *     )
      * )
