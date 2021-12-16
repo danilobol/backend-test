@@ -5,18 +5,16 @@ namespace App\Repositories\Contracts;
 interface ITransactionRepository {
     public function createNewTransaction(
         string $type,
+        string $transaction_date,
         float $amount,
-        int $user_id,
-        int $group_id,
-        ? int $product_id
+        int $investment_id
     );
-    public function detailedStatementOfTransactionsPerGroup(
-        int $userId,
-        int $groupId,
+    public function detailedStatementOfTransactionsPerInvestment(
+        int $investmentId,
         int $rowPerPage,
         int $page
     );
-    public function getFirstInvestmentDatePerGroup(int $userId, int $groupId);
-    public function getTotalUserBalancePerGroup(int $userId, int $groupId);
-    public function getLastDateOfInvestedAmountOfProfit(int $userId, int $groupId);
+    public function getTransactionsByInvestments(int $investmentId);
+    public function getTotalUserBalancePerInvestmentId(int $investmentId);
+    public function getLastDateOfInvestedAmountOfProfit(int $investment_id);
 }
