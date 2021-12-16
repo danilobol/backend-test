@@ -14,13 +14,13 @@
         }
     ],
     "paths": {
-        "/api/group/create": {
+        "/api/investment/create": {
             "post": {
                 "tags": [
-                    "Group"
+                    "Investment"
                 ],
-                "summary": "Criar novos grupos",
-                "operationId": "createGroup",
+                "summary": "Create new investment",
+                "operationId": "createInvestment",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -28,13 +28,16 @@
                             "schema": {
                                 "properties": {
                                     "name": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "example": "Investimentos BB"
                                     },
-                                    "institutions_id": {
-                                        "type": "integer"
+                                    "date_investment": {
+                                        "type": "string",
+                                        "example": "2021-12-16 06:51:44"
                                     },
                                     "amount": {
-                                        "type": "number"
+                                        "type": "number",
+                                        "example": "3000.00"
                                     }
                                 },
                                 "type": "object"
@@ -54,16 +57,16 @@
                 ]
             }
         },
-        "/api/group/show": {
+        "/api/investment/show": {
             "get": {
                 "tags": [
-                    "Group"
+                    "Investment"
                 ],
-                "summary": "Listar grupos pelo id!",
-                "operationId": "showGroup",
+                "summary": "show investment by id!",
+                "operationId": "showInvestment",
                 "parameters": [
                     {
-                        "name": "groupId",
+                        "name": "investmentId",
                         "in": "query",
                         "required": false,
                         "schema": {
@@ -78,13 +81,13 @@
                 }
             }
         },
-        "/api/group/my-group-show": {
+        "/api/investment/my-investment-show": {
             "get": {
                 "tags": [
-                    "Group"
+                    "Investment"
                 ],
-                "summary": "Lista de grupos que o usuário é proprietário",
-                "operationId": "getOwnerGroup",
+                "summary": "show my investments",
+                "operationId": "getOwnerInvestment",
                 "responses": {
                     "200": {
                         "description": "successful operation"
@@ -95,164 +98,6 @@
                         "BearerAuth": []
                     }
                 ]
-            }
-        },
-        "/api/institution/create": {
-            "post": {
-                "tags": [
-                    "Institution"
-                ],
-                "summary": "Create a new institution",
-                "operationId": "createANewInstitution",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "name": {
-                                        "type": "string"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "successful operation"
-                    }
-                },
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/institution/show/{id}": {
-            "get": {
-                "tags": [
-                    "Institution"
-                ],
-                "summary": "show institution by id",
-                "operationId": "showInstitutionById",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Institution id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation"
-                    }
-                }
-            }
-        },
-        "/api/institution/all": {
-            "get": {
-                "tags": [
-                    "Institution"
-                ],
-                "summary": "show institution all",
-                "operationId": "showInstitutionAll",
-                "responses": {
-                    "200": {
-                        "description": "successful operation"
-                    }
-                }
-            }
-        },
-        "/api/institution/product/create": {
-            "post": {
-                "tags": [
-                    "Institution"
-                ],
-                "summary": "Create a new institution product",
-                "operationId": "createNewInstitutionProduct",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "institution_id": {
-                                        "type": "integer"
-                                    },
-                                    "name": {
-                                        "type": "string"
-                                    },
-                                    "description": {
-                                        "type": "string"
-                                    },
-                                    "financial_index": {
-                                        "type": "string"
-                                    },
-                                    "interest_rate": {
-                                        "type": "number"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "successful operation"
-                    }
-                },
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/institution/product/show/{id}": {
-            "get": {
-                "tags": [
-                    "Institution"
-                ],
-                "summary": "show product by id",
-                "operationId": "showProductById",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "product id",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation"
-                    }
-                }
-            }
-        },
-        "/api/institution/product/all": {
-            "get": {
-                "tags": [
-                    "Institution"
-                ],
-                "summary": "show product all",
-                "operationId": "showProductAll",
-                "responses": {
-                    "200": {
-                        "description": "successful operation"
-                    }
-                }
             }
         },
         "/api/transaction/new": {
@@ -269,16 +114,20 @@
                             "schema": {
                                 "properties": {
                                     "type": {
-                                        "type": "string"
+                                        "description": "types: invest / withdraw",
+                                        "type": "string",
+                                        "example": "invest"
                                     },
                                     "amount": {
-                                        "type": "number"
+                                        "type": "number",
+                                        "example": "3000.00"
                                     },
-                                    "group_id": {
+                                    "investment_id": {
                                         "type": "integer"
                                     },
-                                    "product_id": {
-                                        "type": "integer"
+                                    "transaction_date": {
+                                        "type": "string",
+                                        "example": "2021-12-16 06:51:44"
                                     }
                                 },
                                 "type": "object"
@@ -303,11 +152,11 @@
                 "tags": [
                     "Transaction"
                 ],
-                "summary": "Show User Transactions by Investment Group",
+                "summary": "Show User Transactions by Investment Investment",
                 "operationId": "showUserTransactions",
                 "parameters": [
                     {
-                        "name": "groupId",
+                        "name": "investmentId",
                         "in": "query",
                         "required": true,
                         "schema": {
@@ -348,11 +197,11 @@
                 "tags": [
                     "Transaction"
                 ],
-                "summary": "Show User expected balance by Investment Group",
+                "summary": "Show User expected balance by Investment Investment",
                 "operationId": "showUserExpectedBalance",
                 "parameters": [
                     {
-                        "name": "groupId",
+                        "name": "investmentId",
                         "in": "query",
                         "required": true,
                         "schema": {
@@ -386,13 +235,16 @@
                             "schema": {
                                 "properties": {
                                     "email": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "example": "danilo@coderockr.com"
                                     },
                                     "name": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "example": "Danilo"
                                     },
                                     "password": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "example": "123456"
                                     }
                                 },
                                 "type": "object"
@@ -421,10 +273,12 @@
                             "schema": {
                                 "properties": {
                                     "email": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "example": "danilo@coderockr.com"
                                     },
                                     "password": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "example": "123456"
                                     }
                                 },
                                 "type": "object"
@@ -438,192 +292,14 @@
                     }
                 }
             }
-        },
-        "/api/group/user/add": {
-            "post": {
-                "tags": [
-                    "Group"
-                ],
-                "summary": "Add user to grupos",
-                "operationId": "addUserToGroup",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "groupId": {
-                                        "type": "integer"
-                                    },
-                                    "type": {
-                                        "type": "string"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "successful operation"
-                    }
-                },
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/group/user/delete": {
-            "delete": {
-                "tags": [
-                    "Group"
-                ],
-                "summary": "remove user of grupos",
-                "operationId": "removeUserOfGroup",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "groupId": {
-                                        "type": "integer"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "successful operation"
-                    }
-                },
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/group/user/show": {
-            "get": {
-                "tags": [
-                    "Group"
-                ],
-                "summary": "show user grupos",
-                "operationId": "showUserGroup",
-                "responses": {
-                    "200": {
-                        "description": "successful operation"
-                    }
-                },
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/admin/user-role/add": {
-            "post": {
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Add User Role",
-                "operationId": "addUserRole",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "user_id": {
-                                        "type": "string"
-                                    },
-                                    "role_id": {
-                                        "type": "integer"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "successful operation"
-                    }
-                },
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/admin/user-role/remove": {
-            "delete": {
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Remove User Role",
-                "operationId": "removeUserRole",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "user_id": {
-                                        "type": "string"
-                                    },
-                                    "role_id": {
-                                        "type": "integer"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "successful operation"
-                    }
-                },
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/admin/user-role/list": {
-            "get": {
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Get users Roles",
-                "operationId": "getUsersRoles",
-                "responses": {
-                    "200": {
-                        "description": "successful operation"
-                    }
-                },
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ]
-            }
         }
     },
     "components": {
+        "links": {
+            "https://github.com/danilobol/backend-test/blob/development/Tutorial.pdf": {
+                "$ref": "Tutorial"
+            }
+        },
         "securitySchemes": {
             "BearerAuth": {
                 "type": "http",
