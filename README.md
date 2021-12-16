@@ -21,7 +21,6 @@
         docker exec app-investment php artisan key:generate
         docker exec app-investment php artisan optimize
         docker exec app-investment php artisan migrate
-        docker exec app-investment php artisan db:seed
 
 ---------------------------------------
 
