@@ -20,9 +20,7 @@ class ApiProtectedRoute
         try {
             $user = JWTAuth::parseToken()->checkOrFail();
             $userInfo = $user->get('user');
-            $userPermissions = $user->get('permissions');
-            $userRoles = $user->get('roles');
-            $userData = (object)['roles' => $userRoles, 'permissions' => $userPermissions, 'userInfo' => $userInfo];
+            $userData = (object)['userInfo' => $userInfo];
 
             $request->merge(['userData' => $userData]);
 
