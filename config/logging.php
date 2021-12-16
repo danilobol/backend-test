@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\Log\LogTelegram;
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
@@ -21,19 +22,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Deprecations Log Channel
-    |--------------------------------------------------------------------------
-    |
-    | This option controls the log channel that should be used to log warnings
-    | regarding deprecated PHP and library features. This allows you to get
-    | your application ready for upcoming major versions of dependencies.
-    |
-    */
-
-    'deprecations' => env('LOG_DEPRECATIONS_CHANNEL', 'null'),
-
-    /*
-    |--------------------------------------------------------------------------
     | Log Channels
     |--------------------------------------------------------------------------
     |
@@ -50,7 +38,7 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single'],
+            'channels' => ['daily', 'telegram'],
             'ignore_exceptions' => false,
         ],
 
@@ -65,6 +53,16 @@ return [
             'path' => storage_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
             'days' => 14,
+        ],
+
+        'telegram' => [
+            'driver' => 'monolog',
+            'level' => env('TELEGRAM_LOG_LEVEL', 'warning'),
+            'handler' => LogTelegram::class,
+            'handler_with' => [
+                'channel' => env('TELEGRAM_CHAT_ID', '1381769331'),
+                'apiKey' => env('TELEGRAM_BOT_ID', '5026115778:AAGkocLd3OLzxGNbtgn5Iz6MU16CrvLVkVs'),
+            ],
         ],
 
         'slack' => [

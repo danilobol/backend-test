@@ -63,7 +63,7 @@ return [
             ],
 
             /*
-             * Route Group options
+             * Route Investment options
             */
             'group_options' => [],
         ],
