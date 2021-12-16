@@ -29,10 +29,10 @@ class TransactionController extends Controller
      *         required=true,
      *         @OA\JsonContent(
      *         type="object",
-     *          @OA\Property(property="type", type="string"),
-     *          @OA\Property(property="amount", type="number"),
-     *          @OA\Property(property="group_id", type="integer"),
-     *          @OA\Property(property="product_id", type="integer"),
+     *          @OA\Property(property="type", type="string", example="invest", description="types: invest / withdraw"),
+     *          @OA\Property(property="amount", type="number", example="3000.00"),
+     *          @OA\Property(property="investment_id", type="integer"),
+     *          @OA\Property(property="transaction_date", type="string", example="2021-12-16 06:51:44"),
      *          )
      *     ),
      *     security={{"BearerAuth":{}}}
@@ -45,18 +45,18 @@ class TransactionController extends Controller
         try {
             $type = $request->get('type') ?: 'invest';
             $amount = $request->get('amount') ?: 'invest';
-            $group_id = $request->get('group_id') ?: null;
-            $product_id = $request->get('product_id') ?: null;
+            $investment_id = $request->get('investment_id') ?: null;
+            $transaction_date = $request->get('transaction_date') ?: date('Y-m-d H:i:s');
             $data = (object)$request->only([
                 'userData'
             ]);
             $user = (object)$data->userData->userInfo;
             return response()->json($this->transactionService->createNewTransaction(
                 $type,
+                $transaction_date,
                 $amount,
-                $user->id,
-                $group_id,
-                $product_id
+                $investment_id,
+                $user->id
             ));
         }catch (\Exception $e)
         {
@@ -73,13 +73,13 @@ class TransactionController extends Controller
      * @OA\Get(
      *     path="/api/transaction/show",
      *     tags={"Transaction"},
-     *     summary="Show User Transactions by Investment Group",
+     *     summary="Show User Transactions by Investment Investment",
      *     operationId="showUserTransactions",
      *     @OA\Response(
      *         response=200,
      *         description="successful operation",
      *     ),
-     *     @OA\Parameter(in="query", name="groupId", required=true, @OA\Schema(type="integer")),
+     *     @OA\Parameter(in="query", name="investmentId", required=true, @OA\Schema(type="integer")),
      *     @OA\Parameter(in="query", name="rowPerPage", required=false, @OA\Schema(type="integer")),
      *     @OA\Parameter(in="query", name="page", required=false, @OA\Schema(type="integer")),
      *     security={{"BearerAuth":{}}}
@@ -91,14 +91,14 @@ class TransactionController extends Controller
     public function show(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
-            $groupId = $request->input('groupId') !== null ? $request->input('groupId') : null;
+            $investmentId = $request->input('investmentId') !== null ? $request->input('investmentId') : null;
             $data = (object)$request->only([
                 'userData'
             ]);
             $user = (object)$data->userData->userInfo;
             $rowPerPage = $request->input('rowPerPage') !== null ? $request->input('rowPerPage') : 10;
             $page = $request->input('page') !== null ? $request->input('page') : 1;
-            return response()->json($this->transactionService->getUserTransactionsByGroupId($user->id, $groupId, $rowPerPage, $page));
+            return response()->json($this->transactionService->getUserTransactionsByinvestmentId($user->id, $investmentId, $rowPerPage, $page));
         }catch (\Exception $e)
         {
             return response()->json([
@@ -113,13 +113,13 @@ class TransactionController extends Controller
      * @OA\Get(
      *     path="/api/transaction/expected-balance",
      *     tags={"Transaction"},
-     *     summary="Show User expected balance by Investment Group",
+     *     summary="Show User expected balance by Investment Investment",
      *     operationId="showUserExpectedBalance",
      *     @OA\Response(
      *         response=200,
      *         description="successful operation",
      *     ),
-     *     @OA\Parameter(in="query", name="groupId", required=true, @OA\Schema(type="integer")),
+     *     @OA\Parameter(in="query", name="investmentId", required=true, @OA\Schema(type="integer")),
      *     security={{"BearerAuth":{}}}
      * )
      *
@@ -129,12 +129,12 @@ class TransactionController extends Controller
     public function showExpectedBalance(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
-            $groupId = $request->input('groupId') !== null ? $request->input('groupId') : null;
+            $investmentId = $request->input('investmentId') !== null ? $request->input('investmentId') : null;
             $data = (object)$request->only([
                 'userData'
             ]);
             $user = (object)$data->userData->userInfo;
-            return response()->json($this->transactionService->viewOfAnInvestmentWithExpectedBalance($user->id, $groupId));
+            return response()->json($this->transactionService->calculateViewOfAnInvestmentWithExpectedBalance($user->id, $investmentId));
         }catch (\Exception $e)
         {
             return response()->json([
