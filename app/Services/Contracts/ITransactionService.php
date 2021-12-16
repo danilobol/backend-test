@@ -5,16 +5,19 @@ namespace App\Services\Contracts;
 interface ITransactionService {
     public function createNewTransaction(
         string $type,
+        string $transaction_date,
         float $amount,
-        int $user_id,
-        int $group_id,
-        ? int $product_id
+        int $investment_id,
+        int $user_id
     );
-    public function getUserTransactionsByGroupId(
+    public function getUserTransactionsByInvestmentId(
         int $userId,
-        int $groupId,
+        int $investmentId,
         int $rowPerPage,
         int $page);
 
-    public function viewOfAnInvestmentWithExpectedBalance(int $userId, int $groupId);
+    public function calculateViewOfAnInvestmentWithExpectedBalance(
+        int $userId,
+        int $investment_id
+    );
 }

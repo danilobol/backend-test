@@ -3,7 +3,9 @@
 namespace App\Services\Transaction;
 
 
+use App\Repositories\Contracts\IInvestmentRepository;
 use App\Repositories\Contracts\ITransactionRepository;
+use App\Services\Contracts\IInvestmentService;
 use App\Services\Contracts\ITransactionService;
 use DateTime;
 
@@ -15,90 +17,103 @@ class TransactionService implements ITransactionService
     private $percentageEarnings = 0.52;
 
     protected $transactionRepository;
+    protected $investmentService;
 
-    public function __construct(ITransactionRepository $transactionRepository)
+    public function __construct(
+        ITransactionRepository $transactionRepository,
+        IInvestmentService $investmentService
+    )
     {
         $this->transactionRepository = $transactionRepository;
+        $this->investmentService =$investmentService;
     }
 
     public function createNewTransaction(
         string $type,
+        string $transaction_date,
         float $amount,
-        int $user_id,
-        int $group_id,
-        ? int $product_id
+        int $investment_id,
+        int $user_id
     ){
+        $this->checkUserOwnsTheInvestment($user_id, $investment_id);
         if ($type == 'withdraw') {
-            $this->checkTheTimeToWithdraw($user_id, $group_id);
-            $this->checkIfBalanceIsEnough($user_id, $group_id, $amount);
+            $this->checkTheTimeToWithdraw($user_id, $investment_id);
+            $this->checkIfBalanceIsEnough($user_id, $investment_id, $amount);
         }
         return $this->transactionRepository->createNewTransaction(
             $type,
+            $transaction_date,
             $amount,
-            $user_id,
-            $group_id,
-            $product_id
+            $investment_id
         );
     }
 
-    public function getUserTransactionsByGroupId(
+    public function getUserTransactionsByInvestmentId(
         int $userId,
-        int $groupId,
+        int $investmentId,
         int $rowPerPage,
         int $page)
     {
-        return $this->transactionRepository->detailedStatementOfTransactionsPerGroup(
-            $userId,
-            $groupId,
+        $this->checkUserOwnsTheInvestment($userId, $investmentId);
+        return $this->transactionRepository->detailedStatementOfTransactionsPerInvestment(
+            $investmentId,
             $rowPerPage,
             $page
         );
     }
 
     //pog alert! Sorry ='(
-    //desculpa por esse erro grotesco a seguir, fiquei sem tempo de limpar o codigo...
-    public function viewOfAnInvestmentWithExpectedBalance(int $userId, int $groupId){
-        $daysProfit = $this->checkLastDataOfProfit($userId, $groupId);
-        $partialProfitInvestedAmount = 0;
-        $investmentMonths = $this->getInvestmentMonthInterval($userId, $groupId);
-        $investedAmount = $this->getTotalUserBalancePerGroup($userId, $groupId);
-        if ($daysProfit >0) {
-            $partialProfitInvestedAmount = $this->getPartialProfitInvestedAmount($investmentMonths, $investedAmount->invested_amount);
-            if ($partialProfitInvestedAmount > 0)
-                $this->createNewTransaction(
-                    'profit',
-                    $partialProfitInvestedAmount,
-                    $userId,
-                    $groupId,
-                    null);
+    //From here I set fire to the Clean Code book
+    public function calculateViewOfAnInvestmentWithExpectedBalance(
+        int $userId,
+        int $investment_id
+    ){
+        $this->checkUserOwnsTheInvestment($userId, $investment_id);
+        $daysProfit = $this->intervalLastDataOfProfit($investment_id);
+        if ($daysProfit >0 || $daysProfit < 0) {
+            $partialProfitInvestedAmount = $this->calculateInvestmentProfits($investment_id);
+            $this->createNewTransaction(
+                'profit',
+                date('Y-m-d H:i:s'),
+                $partialProfitInvestedAmount,
+                $investment_id,
+                $userId);
         }
-        $investedAmount->invested_amount = $investedAmount->invested_amount + $partialProfitInvestedAmount;
-        return $investedAmount;
+
+        return $this->transactionRepository->getTotalUserBalancePerInvestmentId($investment_id);
     }
 
-    private function getTotalUserBalancePerGroup(int $userId, int $groupId){
-        return $this->transactionRepository->getTotalUserBalancePerGroup(
+    private function calculateInvestmentProfits(int $investment_id){
+        $transactionsInvestment = $this->transactionRepository->getTransactionsByInvestments(
+            $investment_id
+        );
+        $partialProfitInvestedAmount = 0;
+        foreach ($transactionsInvestment as $transaction){
+            $investmentTime = $this->getInvestmentMonthInterval($transaction->transaction_date);
+            $partialProfitInvestedAmount += $this->getPartialProfitInvestedAmount($investmentTime, $transaction->amount);
+        }
+        return $partialProfitInvestedAmount;
+    }
+
+    private function getTotalUserBalancePerInvestment(int $userId, int $investmentId){
+        return $this->transactionRepository->getTotalUserBalancePerInvestmentId(
             $userId,
-            $groupId
+            $investmentId
         );
     }
 
-    private function getInvestmentMonthInterval(int $userId, int $groupId): int
+    private function getInvestmentMonthInterval(string $dateInvestment): int
     {
-        $dataFirstInvestment = $this->transactionRepository->getFirstInvestmentDatePerGroup(
-            $userId,
-            $groupId
-        );
         $currentDate = new DateTime();
         $createdDate = new DateTime();
-        $createdDate->modify($dataFirstInvestment->created_at);
+        $createdDate->modify($dateInvestment);
         $interval = $currentDate->diff($createdDate);
         return ($interval->m);
     }
 
-    private function checkTheTimeToWithdraw(int $user_id, int $group_id) : void
+    private function checkTheTimeToWithdraw(int $user_id, int $investment_id) : void
     {
-        $investmentMonths = $this->getInvestmentMonthInterval($user_id, $group_id);
+        $investmentMonths = $this->getInvestmentMonthInterval($user_id, $investment_id);
         if ($investmentMonths < 1)
             throw new \InvalidArgumentException('This investment does not have time to withdraw!');
     }
@@ -108,20 +123,32 @@ class TransactionService implements ITransactionService
         return $partialProfit * $months;
     }
 
-    private function checkIfBalanceIsEnough(int $user_id, int $group_id, float $amount){
-        $currentBalance = $this->viewOfAnInvestmentWithExpectedBalance($user_id, $group_id);
+    private function checkIfBalanceIsEnough(int $user_id, int $investment_id, float $amount){
+        $currentBalance = $this->calculateViewOfAnInvestmentWithExpectedBalance($user_id, $investment_id);
         if($currentBalance->invested_amount < $amount)
             throw new \InvalidArgumentException('This investment does not have time to withdraw!');
     }
 
-    private function checkLastDataOfProfit(int $user_id, int $group_id): int
+    private function intervalLastDataOfProfit(int $investment_id): int
     {
-        $dateProfit = $this->transactionRepository->getLastDateOfInvestedAmountOfProfit($user_id, $group_id);
+        $dateProfit = $this->getLastDateOfInvestedAmountOfProfit($investment_id);
+        if (!$dateProfit) return -1;
         $currentDate = new DateTime();
-        $createdDate = new DateTime();
-        $createdDate->modify($dateProfit->created_at);
-        $interval = $currentDate->diff($createdDate);
+        $transactionDate = new DateTime();
+        $transactionDate->modify($dateProfit);
+        $interval = $currentDate->diff($transactionDate);
         return ($interval->m);
+    }
+
+    private function checkUserOwnsTheInvestment(int $user_id, int $investment_id){
+        $this->investmentService->checkIfInvestmentIsFromUser($user_id, $investment_id);
+    }
+
+    private function getLastDateOfInvestedAmountOfProfit(int $investment_id){
+        $dateProfit = $this->transactionRepository->getLastDateOfInvestedAmountOfProfit($investment_id);
+        if ($dateProfit)
+            return $dateProfit->transaction_date;
+        return null;
     }
 
 }

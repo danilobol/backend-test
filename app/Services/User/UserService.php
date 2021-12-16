@@ -4,7 +4,6 @@ namespace App\Services\User;
 
 
 use App\Repositories\Contracts\IUserRepository;
-use App\Services\Contracts\IUserRoleService;
 use App\Services\Contracts\IUserService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -13,15 +12,12 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 class UserService implements IUserService
 {
     protected $userRepository;
-    protected $userRoleService;
 
     public function __construct(
-        IUserRepository $userRepository,
-        IUserRoleService $userRoleService,
+        IUserRepository $userRepository
     )
     {
         $this->userRepository = $userRepository;
-        $this->userRoleService = $userRoleService;
     }
 
     public function registerUser(string $email, string $name, string $password){
@@ -36,8 +32,7 @@ class UserService implements IUserService
             throw new \InvalidArgumentException($validator->errors()->first());
         }
 
-        $user = $this->userRepository->createNewUser($email, $name, $password);
-        $this->userRoleService->createUserRole($user->id, 2, $user->id);
+        $this->userRepository->createNewUser($email, $name, $password);
 
         if (!$token = auth()->attempt(['email' => $email, 'password' => $password])){
             throw new \InvalidArgumentException('Unauthorized user, invalid data!');
